@@ -3,11 +3,18 @@ const graphql = require("graphql");
 const users = [
 	{
 		id: "1",
-		username: "Saransh Barua"
+		username: "Saransh Barua",
+		network: ["2", "3"]
 	},
 	{
 		id: "2",
-		username: "Shivanshu Chourasia"
+		username: "Shivanshu Chourasia",
+		network: ["1", "3"]
+	},
+	{
+		id: "3",
+		username: "Ching chau",
+		network: ["1"]
 	}
 ];
 
@@ -63,7 +70,20 @@ const UserType = new GraphQLObjectType({
 		// set: { type: GraphQLString },
 		// designation: { type: GraphQLString },
 		// bio: { type: GraphQLString },
-		// network: { type: new GraphQLList(UserType) },
+		network: {
+			type: new GraphQLList(UserType),
+			resolve(parent, args) {
+				let profiles = [];
+				parent.network.map(i => {
+					for (let j = 0; j < users.length; j++) {
+						if (users[j].id == i) {
+							profiles.push(users[j]);
+						}
+					}
+				});
+				return profiles;
+			}
+		},
 		// pendingNetworkRequests: { type: new GraphQLList(UserType) },
 		posts: {
 			type: new GraphQLList(PostType),
