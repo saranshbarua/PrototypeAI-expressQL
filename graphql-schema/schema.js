@@ -15,8 +15,8 @@ const {
 const UserType = new GraphQLObjectType({
 	name: "User",
 	fields: () => ({
-		id: { type: GraphQLID },
-		username: { type: GraphQLString },
+		id: { type: new GraphQLNonNull(GraphQLID) },
+		username: { type: new GraphQLNonNull(GraphQLString) },
 		// displayName: { type: new GraphQLNonNull(GraphQLString) },
 		// userAvatar: { type: GraphQLString },
 		// email: { type: GraphQLString },
@@ -123,7 +123,7 @@ const RootQuery = new GraphQLObjectType({
 		posts: {
 			type: GraphQLList(PostType),
 			resolve(parent, args) {
-				return posts;
+				return Post.find({});
 			}
 		}
 	}
