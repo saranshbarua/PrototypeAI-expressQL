@@ -1,8 +1,19 @@
 const express = require("express");
 const graphqlHTTP = require("express-graphql");
 const schema = require("./graphql-schema/schema");
+const mongoose = require("mongoose");
+require("dotenv").config();
 const app = express();
 const cors = require("cors");
+
+// Connect to mLab database
+mongoose
+	.connect(process.env.MONGO_URL, { useNewUrlParser: true })
+	.then(() => console.log("MongoDB Connected"))
+	.catch(err =>
+		console.log("Error connecting to database.\nERR:", err.message)
+	);
+mongoose.connection.once("open", () => console.log("Connected to cloud"));
 
 app.use(
 	"/graphql",
@@ -13,6 +24,6 @@ app.use(
 	})
 );
 
-app.listen(process.env.PORT || 4000, () => {
-	console.log(`Serve runnning on port ${process.env.PORT || 4000}`);
+app.listen(4000, () => {
+	console.log(`Serve runnning on port 4000`);
 });
