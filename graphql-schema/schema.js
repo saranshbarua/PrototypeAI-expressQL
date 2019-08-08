@@ -2,8 +2,8 @@ const graphql = require("graphql");
 const User = require("../models/User");
 const Post = require("../models/Post");
 
-// TypeDefs
-const { UserType, PostType} = require("./types/types");
+// ----------- TypeDefs  ------------
+const { UserType, PostType } = require("./types/index");
 
 const {
 	GraphQLObjectType,
