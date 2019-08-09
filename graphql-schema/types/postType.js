@@ -1,5 +1,5 @@
 const graphql = require("graphql");
-const UserType = require("./userType");
+const User = require("../../models/User");
 
 const { GraphQLObjectType, GraphQLString, GraphQLID } = graphql;
 
@@ -7,24 +7,17 @@ const PostType = new GraphQLObjectType({
 	name: "Post",
 	fields: () => ({
 		id: { type: GraphQLID },
-		// timestamp: { type: GraphQLString },
 		description: { type: GraphQLString },
 		author: {
 			type: UserType,
 			resolve(parent, args) {
-				let author;
-				users.map(i => {
-					if (parent.author === i.id) {
-						author = i;
-					}
-				});
-				return author;
+				return User.findOne({ username: parent.author });
 			}
 		}
-		// image: { type: GraphQLString },
-		// likes: { type: GraphQLInt },
-		// comments: { type: new GraphQLList(GraphQLString) }
 	})
 });
 
 module.exports = PostType;
+
+// This is here to prevent circular dependencies problem which will lead to the formation of infinite loop
+const UserType = require("./userType");

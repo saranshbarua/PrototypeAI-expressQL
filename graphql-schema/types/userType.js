@@ -1,56 +1,23 @@
 const graphql = require("graphql");
-const PostType = require("./postType");
+const Post = require("../../models/Post");
 
-const {
-	GraphQLObjectType,
-	GraphQLString,
-	GraphQLID,
-	GraphQLList,
-	GraphQLNonNull
-} = graphql;
+const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
 
 const UserType = new GraphQLObjectType({
 	name: "User",
 	fields: () => ({
-		id: { type: new GraphQLNonNull(GraphQLID) },
-		username: { type: new GraphQLNonNull(GraphQLString) },
-		// displayName: { type: new GraphQLNonNull(GraphQLString) },
-		// userAvatar: { type: GraphQLString },
-		// email: { type: GraphQLString },
-		// password: { type: GraphQLString },
-		// interests: { type: new GraphQLList(GraphQLString) },
-		// skills: { type: new GraphQLList(GraphQLString) },
-		// set: { type: GraphQLString },
-		// designation: { type: GraphQLString },
-		// bio: { type: GraphQLString },
-		network: {
-			type: new GraphQLList(UserType),
-			resolve(parent, args) {
-				let profiles = [];
-				parent.network.map(i => {
-					for (let j = 0; j < users.length; j++) {
-						if (users[j].id == i) {
-							profiles.push(users[j]);
-						}
-					}
-				});
-				return profiles;
-			}
-		},
-		// pendingNetworkRequests: { type: new GraphQLList(UserType) },
+		id: { type: GraphQLID },
+		username: { type: GraphQLString },
 		posts: {
 			type: new GraphQLList(PostType),
 			resolve(parent, args) {
-				let postList = [];
-				posts.map(i => {
-					if (parent.id === i.author) {
-						postList.push(i);
-					}
-				});
-				return postList;
+				return Post.find({ author: parent.username });
 			}
 		}
 	})
 });
 
 module.exports = UserType;
+
+// This is here to prevent circular dependencies problem which will lead to the formation of infinite loop
+const PostType = require("./postType");
