@@ -33,8 +33,6 @@ const Mutation = new GraphQLObjectType({
 					{ $push: { network: args.userToAdd } },
 					{ new: true, useFindAndModify: false, safe: true, upsert: true }
 				);
-
-				console.log(`RESULT: ${result}`);
 				return result;
 			}
 		},
