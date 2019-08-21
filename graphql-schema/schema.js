@@ -1,10 +1,10 @@
 const graphql = require("graphql");
 const { GraphQLSchema } = graphql;
 
-// ----------- RootQuery  ------------
+// RootQuery
 const RootQuery = require("./rootQuery/index");
 
-// ----------- Mutations  ------------
+// Mutations
 const Mutation = require("./mutations/index");
 
 module.exports = new GraphQLSchema({
