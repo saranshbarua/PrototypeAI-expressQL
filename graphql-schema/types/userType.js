@@ -9,6 +9,19 @@ const UserType = new GraphQLObjectType({
 	fields: () => ({
 		id: { type: GraphQLID },
 		username: { type: GraphQLString },
+		displayName: { type: GraphQLString },
+		userAvatar: { type: GraphQLString },
+		coverPhoto: { type: GraphQLString },
+		designation: { type: GraphQLString },
+		bio: { type: GraphQLString },
+		email: { type: GraphQLString },
+		password: { type: GraphQLString },
+		location: { type: GraphQLList(GraphQLString) },
+		interests: { type: GraphQLList(GraphQLString) },
+		skills: { type: GraphQLList(GraphQLString) },
+		network: { type: GraphQLList(GraphQLString) },
+		pendingRequest: { type: GraphQLList(GraphQLString) },
+		sentRequest: { type: GraphQLList(GraphQLString) },
 		posts: {
 			type: new GraphQLList(PostType),
 			resolve(parent, args) {
