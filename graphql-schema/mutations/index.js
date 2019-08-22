@@ -51,6 +51,7 @@ const Mutation = new GraphQLObjectType({
 				return post.save();
 			}
 		},
+		// Send connection request
 		sendRequest: {
 			type: UserType,
 			args: {
@@ -60,7 +61,7 @@ const Mutation = new GraphQLObjectType({
 			async resolve(parent, args) {
 				try {
 					// Add to recipient's pending request
-					const recipientUpdate = await User.findOneAndUpdate(
+					await User.findOneAndUpdate(
 						{ username: args.recipient },
 						{ $push: { pendingRequest: args.sender } },
 						{ new: true, useFindAndModify: false, safe: true, upsert: true }
@@ -72,6 +73,49 @@ const Mutation = new GraphQLObjectType({
 						{ new: true, useFindAndModify: false, safe: true, upsert: true }
 					);
 					return senderUpdate;
+				} catch (e) {
+					console.error(e);
+				}
+			}
+		},
+		// Accept connection request
+		acceptRequest: {
+			type: UserType,
+			args: {
+				sender: { type: GraphQLString },
+				recipient: { type: GraphQLString }
+			},
+			async resolve(parent, args) {
+				try {
+					// Add to reciepent's network
+					await User.findOneAndUpdate(
+						{ username: args.recipient },
+						{ $push: { network: args.sender } },
+						{ new: true, useFindAndModify: false, safe: true, upsert: true }
+					);
+					// Add to sender's network
+					await User.findOneAndUpdate(
+						{ username: args.sender },
+						{ $push: { network: args.recipient } },
+						{ new: true, useFindAndModify: false, safe: true, upsert: true }
+					);
+					// Remove from recipient's pending request
+					await User.findOneAndUpdate(
+						{ username: args.recipient },
+						{ $pull: { pendingRequest: args.sender } },
+						{ new: true, useFindAndModify: false, safe: true, upsert: true }
+					);
+					// Remove from sender's sent request
+					await User.findOneAndUpdate(
+						{ username: args.sender },
+						{ $pull: { sentRequest: args.recipient } },
+						{ new: true, useFindAndModify: false, safe: true, upsert: true }
+					);
+					// Return recipient
+					const updatedRecipient = await User.findOne({
+						username: args.recipient
+					});
+					return updatedRecipient;
 				} catch (e) {
 					console.error(e);
 				}
