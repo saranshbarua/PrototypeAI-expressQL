@@ -46,7 +46,8 @@ const UserType = new GraphQLObjectType({
 				}
 				return Promise.all(promises).then(res => res);
 			}
-		}
+		},
+		timeline: { type: new GraphQLList(PostType) }
 	})
 });
 

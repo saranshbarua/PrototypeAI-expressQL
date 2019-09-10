@@ -16,7 +16,8 @@ const UserSchema = new Schema({
 	skills: Array,
 	network: Array,
 	pendingRequest: Array,
-	sentRequest: Array
+	sentRequest: Array,
+	timeline: Array
 });
 
 module.exports = mongoose.model("User", UserSchema, "users");
