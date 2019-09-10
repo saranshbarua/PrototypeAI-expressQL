@@ -42,13 +42,23 @@ const Mutation = new GraphQLObjectType({
 				description: { type: GraphQLString },
 				author: { type: new GraphQLNonNull(GraphQLString) }
 			},
-			resolve(parent, args) {
+			async resolve(parent, args) {
 				let post = new Post({
 					description: args.description,
 					author: args.author
 				});
-
-				return post.save();
+				let newPost = await post.save();
+				let postAuthor = await User.findOne({ username: args.author });
+				postAuthor.timeline.push(newPost._id);
+				await postAuthor.save();
+				postAuthor.network.map(async user => {
+					let connection = await User.findOneAndUpdate(
+						{ username: user },
+						{ $push: { timeline: newPost._id } },
+						{ new: true, useFindAndModify: false, safe: true, upsert: true }
+					);
+				});
+				return newPost;
 			}
 		},
 		// Send connection request
