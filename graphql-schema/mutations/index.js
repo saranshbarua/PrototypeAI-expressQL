@@ -49,6 +49,10 @@ const Mutation = new GraphQLObjectType({
 				});
 				let newPost = await post.save();
 				let postAuthor = await User.findOne({ username: args.author });
+				// Removes old posts from timeline (limit can be increased)
+				if (postAuthor.timeline.length >= 5) {
+					postAuthor.timeline.shift();
+				}
 				postAuthor.timeline.push(newPost._id);
 				await postAuthor.save();
 				postAuthor.network.map(async user => {
