@@ -1,7 +1,7 @@
 const graphql = require("graphql");
 const User = require("../../models/User");
 const Post = require("../../models/Post");
-
+const TIMELINE_LIMIT = 5;
 const { UserType, PostType } = require("../types/index");
 
 const { GraphQLObjectType, GraphQLString, GraphQLNonNull } = graphql;
@@ -50,14 +50,14 @@ const Mutation = new GraphQLObjectType({
 				let newPost = await post.save();
 				let postAuthor = await User.findOne({ username: args.author });
 				// Removes old posts from timeline (limit can be increased)
-				if (postAuthor.timeline.length >= 5) {
+				if (postAuthor.timeline.length >= TIMELINE_LIMIT) {
 					postAuthor.timeline.shift();
 				}
 				postAuthor.timeline.push(newPost._id);
 				await postAuthor.save();
 				postAuthor.network.map(async user => {
 					let connection = await User.findOne({ username: user });
-					if (connection.timeline.length >= 5) {
+					if (connection.timeline.length >= TIMELINE_LIMIT) {
 						connection.timeline.shift();
 					}
 					connection.timeline.push(newPost._id);
