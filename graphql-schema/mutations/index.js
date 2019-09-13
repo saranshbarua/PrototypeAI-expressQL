@@ -9,6 +9,7 @@ const { GraphQLObjectType, GraphQLString, GraphQLNonNull } = graphql;
 const Mutation = new GraphQLObjectType({
 	name: "Mutation",
 	fields: {
+		// Add a new User
 		addUser: {
 			type: UserType,
 			args: {
@@ -21,21 +22,7 @@ const Mutation = new GraphQLObjectType({
 				return user.save();
 			}
 		},
-		addUserToNetwork: {
-			type: UserType,
-			args: {
-				username: { type: new GraphQLNonNull(GraphQLString) },
-				userToAdd: { type: new GraphQLNonNull(GraphQLString) }
-			},
-			async resolve(parent, args) {
-				const result = await User.findOneAndUpdate(
-					{ username: args.username },
-					{ $push: { network: args.userToAdd } },
-					{ new: true, useFindAndModify: false, safe: true, upsert: true }
-				);
-				return result;
-			}
-		},
+		// Add a post
 		addPost: {
 			type: PostType,
 			args: {
