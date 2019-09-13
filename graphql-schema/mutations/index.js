@@ -56,11 +56,12 @@ const Mutation = new GraphQLObjectType({
 				postAuthor.timeline.push(newPost._id);
 				await postAuthor.save();
 				postAuthor.network.map(async user => {
-					let connection = await User.findOneAndUpdate(
-						{ username: user },
-						{ $push: { timeline: newPost._id } },
-						{ new: true, useFindAndModify: false, safe: true, upsert: true }
-					);
+					let connection = await User.findOne({ username: user });
+					if (connection.timeline.length >= 5) {
+						connection.timeline.shift();
+					}
+					connection.timeline.push(newPost._id);
+					await connection.save();
 				});
 				return newPost;
 			}
