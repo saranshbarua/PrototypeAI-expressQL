@@ -1,7 +1,7 @@
 const graphql = require("graphql");
 const User = require("../../models/User");
 
-const { GraphQLObjectType, GraphQLString, GraphQLID } = graphql;
+const { GraphQLObjectType, GraphQLString, GraphQLID, GraphQLList } = graphql;
 
 const PostType = new GraphQLObjectType({
 	name: "Post",
@@ -13,6 +13,9 @@ const PostType = new GraphQLObjectType({
 			resolve(parent, args) {
 				return User.findOne({ username: parent.author });
 			}
+		},
+		likedBy: {
+			type: new GraphQLList(GraphQLString)
 		}
 	})
 });

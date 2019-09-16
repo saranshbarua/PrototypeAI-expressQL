@@ -122,6 +122,25 @@ const Mutation = new GraphQLObjectType({
 					console.error(e);
 				}
 			}
+		},
+		// Like post
+		likePost: {
+			type: PostType,
+			args: {
+				postId: { type: GraphQLString },
+				user: { type: GraphQLString }
+			},
+			async resolve(parent, args) {
+				let post = await Post.findOne({ _id: args.postId });
+				// Add username to likedBy if not present else remove
+				if (!post.likedBy.includes(args.user)) {
+					post.likedBy.push(args.user);
+				} else {
+					post.likedBy.splice(post.likedBy.indexOf(args.user), 1);
+				}
+				await post.save();
+				return post;
+			}
 		}
 	}
 });
