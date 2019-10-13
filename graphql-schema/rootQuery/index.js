@@ -5,7 +5,7 @@ const Post = require("../../models/Post");
 // ----------- TypeDefs  ------------
 const { UserType, PostType } = require("../types/index");
 
-const { GraphQLObjectType, GraphQLID, GraphQLList } = graphql;
+const { GraphQLObjectType, GraphQLID, GraphQLList, GraphQLString } = graphql;
 
 // Root Query
 const RootQuery = new GraphQLObjectType({
@@ -14,9 +14,9 @@ const RootQuery = new GraphQLObjectType({
 		// Find a user by ID
 		user: {
 			type: UserType,
-			args: { id: { type: GraphQLID } },
+			args: { username: { type: GraphQLString } },
 			resolve(parent, args) {
-				return User.findById(args.id);
+				return User.findOne({ username: args.username });
 			}
 		},
 		// Find a post by ID
