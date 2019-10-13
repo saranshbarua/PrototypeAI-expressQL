@@ -22,6 +22,17 @@ const Mutation = new GraphQLObjectType({
 				return user.save();
 			}
 		},
+		// Remove a user
+		removeUser: {
+			type: UserType,
+			args: {
+				username: { type: new GraphQLNonNull(GraphQLString) }
+			},
+			resolve(parent, args) {
+				let user = User.findOne({ username: args.username });
+				return user.remove();
+			}
+		},
 		// Add a post
 		addPost: {
 			type: PostType,
